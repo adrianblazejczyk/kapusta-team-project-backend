@@ -5,11 +5,10 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 
+const usersRouter = require("./src/routes/api/usersRouter");
+
 const DB_URL = process.env.DB_HOST;
-
 const db = mongoose.connect(DB_URL);
-
-const signupRouter = require("./src/routes/signup");
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
@@ -21,7 +20,7 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/signup", signupRouter);
+app.use("/api/users", usersRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
