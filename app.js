@@ -1,6 +1,5 @@
 const express = require("express");
 
-// comment to be removed in a later stage: I have placed .env file in root. We should not put it in any folder as it may cause unnecessary errors.
 require("dotenv").config();
 const logger = require("morgan");
 const cors = require("cors");
