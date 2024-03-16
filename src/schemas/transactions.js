@@ -19,7 +19,7 @@ const transactionSchema = new Schema({
         enum: [
             "Transport",
             "Products",
-            "Healt",
+            "Health",
             "Alcohol",
             "Entertainment",
             "Housing",
@@ -30,11 +30,11 @@ const transactionSchema = new Schema({
             "Other",
         ],
     },
-    // date: {
-    // type: Date,
+    date: {
+        type: Date,
 
-    //  required: false,
-    // },
+        required: false,
+    },
     owner: {
         type: Schema.Types.ObjectId,
         ref: "user",

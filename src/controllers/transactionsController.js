@@ -15,16 +15,8 @@ const getTransactions = async (req, res) => {
 
 const postTransaction = async (req, res) => {
     try {
-        const {
-            description,
-            amount,
-            category, // date
-        } = req.body;
-        if (
-            !description ||
-            !amount ||
-            !category // || !date
-        ) {
+        const { description, amount, category, date } = req.body;
+        if (!description || !amount || !category || !date) {
             return res.status(400).json({ message: "All fields are required" });
         }
         const transactionData = {
@@ -32,7 +24,7 @@ const postTransaction = async (req, res) => {
             amount,
 
             category,
-            // date,
+            date,
         };
         const transaction = await addNewTransaction(transactionData);
         res.status(201).json({

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-// date description expense sum
 const incomeSchema = new Schema({
     description: {
         type: String,
@@ -19,11 +18,11 @@ const incomeSchema = new Schema({
         required: true,
         enum: ["SALARY", "ADD.INCOME"],
     },
-    // date: {
-    //     type: Date,
-    //     get: (value) => value.toDateString(),
-    //     required: true,
-    // },
+    date: {
+        type: Date,
+
+        required: true,
+    },
     owner: {
         type: Schema.Types.ObjectId,
         ref: "user",
