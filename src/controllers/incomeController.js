@@ -41,7 +41,26 @@ const addIncome = async (req, res, next) => {
     }
 };
 
+const removeIncome = async (req, res) => {
+    try {
+        const { incomeId } = req.params;
+        if (!incomeId) {
+            return res.status(400).json({ message: "Income ID is required" });
+        }
+        const income = await deleteIncome(incomeId);
+        if (!incomeId) {
+            return res.status(404).json({ message: "Income not found" });
+        }
+        res.status(200).json({
+            message: "Income deleted successfully",
+            income,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     addIncome,
-    deleteIncome,
+    removeIncome,
 };

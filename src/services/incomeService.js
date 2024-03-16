@@ -1,11 +1,19 @@
 const Income = require("../schemas/income");
 
 async function addNewIncome(userData) {
-    return await Income.create(userData);
+    try {
+        return await Income.create(userData);
+    } catch (error) {
+        throw new Error(error.message);
+    }
 }
 
-async function deleteIncome(id) {
-    return await Income.findById(id);
+async function deleteIncome(incomeId) {
+    try {
+        return await Income.findByIdAndDelete({ _id: incomeId });
+    } catch (error) {
+        throw new Error(error.message);
+    }
 }
 
 module.exports = {
