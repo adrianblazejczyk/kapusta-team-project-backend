@@ -1,7 +1,6 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const { findUserById } = require("../services/userService");
-
-require("dotenv").config();
 
 const handleJoiError = (status, message, res) => {
   res.status(status).json({ message: message });
