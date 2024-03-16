@@ -1,3 +1,4 @@
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { newUserAuthSchema } = require("../validators/userValidation");
@@ -7,6 +8,8 @@ const {
   findUserById,
   updateUserToken,
 } = require("../services/userService");
+
+require("dotenv").config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -81,4 +84,20 @@ const logout = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, login, logout };
+const currentUser = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const userData = await findUserById(userId);
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { _id, email } = userData;
+
+    res.status(200).json({ user: { _id, email } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { signup, login, logout, currentUser };
