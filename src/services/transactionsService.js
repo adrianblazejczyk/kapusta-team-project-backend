@@ -1,27 +1,73 @@
 const Transaction = require("../schemas/transactions");
 
-async function getAllTransactions() {
-  return await Transaction.find();
-}
+const Category = require("../schemas/category");
+const User = require("../schemas/user");
 
-async function addNewTransaction(transactionData) {
-  try {
-    return await Transaction.create(transactionData);
-  } catch (error) {
-    throw new Error(error.message);
-  }
-}
+const addTransaction = async (transactionData, userId) => {
+    const categoryExists = await Category.findOne({
+        name: transactionData.type,
+        items: transactionData.category,
+    });
 
-async function deleteTransaction(transactionId) {
-  try {
-    return await Transaction.findByIdAndDelete(transactionId);
-  } catch (error) {
-    throw new Error(error.message);
-  }
-}
+    if (!categoryExists) {
+        throw new Error("Invalid category");
+    }
+
+    const transaction = new Transaction({
+        ...transactionData,
+        user: userId,
+    });
+
+    await transaction.save();
+
+    await updateBalance(userId, transactionData.amount, transactionData.type);
+
+    return transaction;
+};
+
+const getIncomeTransactionsByUser = async (userId) => {
+    const transactions = await Transaction.find({
+        user: userId,
+        type: "Income",
+    }).populate("category", "name");
+    return transactions;
+};
+const getExpensesTransactionsByUser = async (userId) => {
+    const transactions = await Transaction.find({
+        user: userId,
+        type: "Expenses",
+    }).populate("category", "name");
+    return transactions;
+};
+
+const deleteTransaction = async (transactionId, userId) => {
+    const transaction = await Transaction.findOne({ _id: transactionId });
+    await Transaction.findOneAndDelete({ _id: transactionId });
+    await updateBalance(
+        userId,
+        parseInt(-transaction.amount),
+        transaction.type
+    );
+};
+
+const updateBalance = async (userId, amount, type) => {
+    const user = await User.findOne({ _id: userId });
+    const previousUserBalance = user.balance;
+    let currentUserBalance;
+    if (type === "Income") {
+        currentUserBalance = parseInt(previousUserBalance) + parseInt(amount);
+    } else {
+        currentUserBalance = parseInt(previousUserBalance) - parseInt(amount);
+    }
+    await User.findOneAndUpdate(
+        { _id: userId },
+        { $set: { balance: currentUserBalance } }
+    );
+};
 
 module.exports = {
-  getAllTransactions,
-  addNewTransaction,
-  deleteTransaction,
+    addTransaction,
+    getIncomeTransactionsByUser,
+    getExpensesTransactionsByUser,
+    deleteTransaction,
 };

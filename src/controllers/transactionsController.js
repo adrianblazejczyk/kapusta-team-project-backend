@@ -1,72 +1,53 @@
-const {
-    getAllTransactions,
-    addNewTransaction,
-    deleteTransaction,
-} = require("../services/transactionsService");
+const transactionsService = require("../services/transactionsService");
 
-const getTransactions = async (req, res) => {
+const addTransaction = async (req, res, next) => {
     try {
-        const transactions = await getAllTransactions();
-        res.status(200).json(transactions);
+        const transaction = await transactionsService.addTransaction(
+            req.body,
+            req.user.id
+        );
+        res.status(201).json(transaction);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const postTransaction = async (req, res) => {
+const getIncomeTransactionsByUser = async (req, res, next) => {
     try {
-        const {
-            description,
-            amount,
-            category, // date
-        } = req.body;
-        if (
-            !description ||
-            !amount ||
-            !category // || !date
-        ) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-        const transactionData = {
-            description,
-            amount,
-
-            category,
-            // date,
-        };
-        const transaction = await addNewTransaction(transactionData);
-        res.status(201).json({
-            message: "Transaction added successfully",
-            transaction,
-        });
+        const transactions =
+            await transactionsService.getIncomeTransactionsByUser(req.user.id);
+        res.json(transactions);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const removeTransaction = async (req, res) => {
+const getExpensesTransactionsByUser = async (req, res, next) => {
     try {
-        const { transactionId } = req.params;
-        if (!transactionId) {
-            return res
-                .status(400)
-                .json({ message: "Transaction ID is required" });
-        }
-        const transaction = await deleteTransaction(transactionId);
-        if (!transaction) {
-            return res.status(404).json({ message: "Transaction not found" });
-        }
-        res.status(200).json({
-            message: "Transaction deleted successfully",
-            transaction,
-        });
+        const transactions =
+            await transactionsService.getExpensesTransactionsByUser(
+                req.user.id
+            );
+        res.json(transactions);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
+    }
+};
+
+const deleteTransaction = async (req, res, next) => {
+    try {
+        await transactionsService.deleteTransaction(req.body.id, req.user.id);
+        return res
+            .status(200)
+            .json({ message: "Transaction deleted successfully" });
+    } catch (error) {
+        next(error);
     }
 };
 
 module.exports = {
-    getTransactions,
-    postTransaction,
-    removeTransaction,
+    addTransaction,
+    getIncomeTransactionsByUser,
+    getExpensesTransactionsByUser,
+    deleteTransaction,
 };
