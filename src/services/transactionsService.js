@@ -4,13 +4,11 @@ const Category = require("../schemas/category");
 const User = require("../schemas/user");
 
 const addTransaction = async (transactionData, userId) => {
-    const categoryExists = await Category.findOne(
-        // {
-        //     type: transactionData.type,
-        // } ||
+    const categoryExists = await Category.findOne({
+        name: transactionData.type,
+        items: transactionData.category,
+    });
 
-        { category: transactionData.category }
-    );
     if (!categoryExists) {
         throw new Error("Invalid category");
     }
@@ -31,14 +29,14 @@ const getIncomeTransactionsByUser = async (userId) => {
     const transactions = await Transaction.find({
         user: userId,
         type: "Income",
-    }).populate("category", "type");
+    }).populate("category", "name");
     return transactions;
 };
 const getExpensesTransactionsByUser = async (userId) => {
     const transactions = await Transaction.find({
         user: userId,
         type: "Expenses",
-    }).populate("category", "type");
+    }).populate("category", "name");
     return transactions;
 };
 
@@ -56,7 +54,7 @@ const updateBalance = async (userId, amount, type) => {
     const user = await User.findOne({ _id: userId });
     const previousUserBalance = user.balance;
     let currentUserBalance;
-    if (type === "income") {
+    if (type === "Income") {
         currentUserBalance = parseInt(previousUserBalance) + parseInt(amount);
     } else {
         currentUserBalance = parseInt(previousUserBalance) - parseInt(amount);
