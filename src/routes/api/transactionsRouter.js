@@ -1,28 +1,21 @@
 const express = require("express");
 
-
-const {
-    addIncome,
-    removeIncome,
-} = require("../../controllers/incomeController");
-
-const {
-    getTransactions,
-    postTransaction,
-    removeTransaction,
-} = require("../../controllers/transactionsController");
-
+const transactionsController = require("../../controllers/transactionsController");
+const authMiddleware = require("../../middlewares/verifyToken");
 
 const router = express.Router();
-// income
-router.post("/add-income", addIncome);
-router.delete("/remove-income/:incomeId", removeIncome);
 
-// transaction
-router.get("/", getTransactions);
-
-router.post("/", postTransaction);
-
-router.delete("/:transactionId", removeTransaction);
+router.post("/", authMiddleware, transactionsController.addTransaction);
+router.get(
+    "/income",
+    authMiddleware,
+    transactionsController.getIncomeTransactionsByUser
+);
+router.get(
+    "/expenses",
+    authMiddleware,
+    transactionsController.getExpensesTransactionsByUser
+);
+router.delete("/", authMiddleware, transactionsController.deleteTransaction);
 
 module.exports = router;
