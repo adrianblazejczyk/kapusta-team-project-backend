@@ -1,10 +1,18 @@
 const transactionsService = require("../services/transactionsService");
-const mongoose = require("mongoose");
+
+const { validateTransaction } = require("../validators/transactionValidator");
 
 const addTransaction = async (req, res, next) => {
-  try {
-    if (!mongoose.Types.ObjectId.isValid(req.user.id)) {
-      return res.status(400).json({ message: "Invalid user ID" });
+    try {
+        await validateTransaction(req.body);
+        const transaction = await transactionsService.addTransaction(
+            req.body,
+            req.user.id
+        );
+        res.status(201).json(transaction);
+    } catch (error) {
+        next(error);
+
     }
 
     const transaction = await transactionsService.addTransaction(
