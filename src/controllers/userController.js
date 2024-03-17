@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
     newUserAuthSchema,
-    validateUpdateBalance,
+    updateBalanceSchema,
 } = require("../validators/userValidation");
 const {
     addNewUser,
@@ -109,9 +109,11 @@ const currentUser = async (req, res, next) => {
 
 const updateUserBalance = async (req, res, next) => {
     try {
-        await validateUpdateBalance.validate(req.body);
+        await updateBalanceSchema.validate(req.body);
         const updatedUser = await updateUsersBalance(req.user.id, req.body);
-        res.json(updatedUser);
+        const { _id, email, balance } = updatedUser;
+
+        res.status(200).json({ user: { _id, email, balance } });
     } catch (error) {
         next(error);
     }

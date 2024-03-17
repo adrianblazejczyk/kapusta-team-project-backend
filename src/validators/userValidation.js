@@ -25,14 +25,10 @@ const checkUserEmailSchema = Joi.object({
     email: Joi.string().email().required(),
 });
 
-const validateUpdateBalance = (userData) => {
-    return updateBalanceSchema.validateAsync(userData, { abortEarly: false });
-};
-
 module.exports = {
     newUserAuthSchema,
     loginUserAuthSchema,
     currUserAuthSchema,
     checkUserEmailSchema,
-    validateUpdateBalance,
+    updateBalanceSchema,
 };

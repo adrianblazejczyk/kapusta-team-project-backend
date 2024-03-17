@@ -14,5 +14,5 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.get("/logout", verifyToken, logout);
 router.get("/current", verifyToken, currentUser);
-router.patch("/", verifyToken, updateUserBalance);
+router.get("/balance", verifyToken, updateUserBalance);
 module.exports = router;
