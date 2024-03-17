@@ -4,10 +4,13 @@ const Category = require("../schemas/category");
 const User = require("../schemas/user");
 
 const addTransaction = async (transactionData, userId) => {
-    const categoryExists = await Category.findOne({
-        name: transactionData.type,
-        items: transactionData.category,
-    });
+    const categoryExists = await Category.findOne(
+        // {
+        //     type: transactionData.type,
+        // } ||
+
+        { category: transactionData.category }
+    );
     if (!categoryExists) {
         throw new Error("Invalid category");
     }
@@ -27,15 +30,15 @@ const addTransaction = async (transactionData, userId) => {
 const getIncomeTransactionsByUser = async (userId) => {
     const transactions = await Transaction.find({
         user: userId,
-        type: "income",
-    }).populate("category", "name");
+        type: "Income",
+    }).populate("category", "type");
     return transactions;
 };
 const getExpensesTransactionsByUser = async (userId) => {
     const transactions = await Transaction.find({
         user: userId,
-        type: "expenses",
-    }).populate("category", "name");
+        type: "Expenses",
+    }).populate("category", "type");
     return transactions;
 };
 
