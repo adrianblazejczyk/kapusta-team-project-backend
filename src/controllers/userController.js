@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
     newUserAuthSchema,
+    loginUserAuthSchema,
     updateBalanceSchema,
 } = require("../validators/userValidation");
 const {
@@ -50,7 +51,7 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
     try {
         const { password, email } = req.body;
-        const { error } = newUserAuthSchema.validate(req.body);
+        const { error } = loginUserAuthSchema.validate(req.body);
         if (error) return handleJoiError(400, error.message, res);
         const userData = await findUserByEmail(email);
         if (!userData)
