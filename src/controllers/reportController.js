@@ -1,5 +1,9 @@
 const reportService = require("../services/reportService");
 const Transaction = require("../schemas/transactions");
+const {
+  reportQuerySchema,
+  categoryReportQuerySchema,
+} = require("../validators/reportValidator");
 
 const getExpensesReport = async (req, res, next) => {
   try {
@@ -29,26 +33,15 @@ const getIncomeReport = async (req, res, next) => {
 
 const getDetailedReport = async (req, res, next) => {
   try {
-    const { year, month } = req.query;
-
-    if (!/^\d{4}$/.test(year)) {
+    const { error, value } = reportQuerySchema.validate(req.query);
+    if (error) {
       return res.status(400).json({
         status: "error",
-        message: "Invalid year value. Please provide a valid year.",
+        message: error.details[0].message,
       });
     }
 
-    if (
-      !/^\d{1,2}$/.test(month) ||
-      parseInt(month) < 1 ||
-      parseInt(month) > 12
-    ) {
-      return res.status(400).json({
-        status: "error",
-        message:
-          "Invalid month value. Please provide a valid month between 1 and 12.",
-      });
-    }
+    const { year, month } = value;
 
     const report = await reportService.getDetailedReport(
       req.user.id,
@@ -75,22 +68,15 @@ const getDetailedReport = async (req, res, next) => {
 
 const getDetailedCategoryReport = async (req, res, next) => {
   try {
-    const { type, category } = req.query;
-
-    if (!type || (type !== "Income" && type !== "Expenses")) {
+    const { error, value } = categoryReportQuerySchema.validate(req.query);
+    if (error) {
       return res.status(400).json({
         status: "error",
-        message:
-          "Invalid or missing type parameter. Please provide either 'Income' or 'Expenses'.",
+        message: error.details[0].message,
       });
     }
 
-    if (!category) {
-      return res.status(400).json({
-        status: "error",
-        message: "Missing category parameter. Please provide a category.",
-      });
-    }
+    const { type, category } = value;
 
     const transactions = await Transaction.find({
       user: req.user.id,
