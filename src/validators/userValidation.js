@@ -17,18 +17,8 @@ const updateBalanceSchema = Joi.object({
     balance: Joi.number().min(0.01).required(),
 });
 
-const currUserAuthSchema = Joi.object({
-    token: Joi.string().required(),
-});
-
-const checkUserEmailSchema = Joi.object({
-    email: Joi.string().email().required(),
-});
-
 module.exports = {
     newUserAuthSchema,
     loginUserAuthSchema,
-    currUserAuthSchema,
-    checkUserEmailSchema,
     updateBalanceSchema,
 };
