@@ -55,9 +55,11 @@ const updateBalance = async (userId, amount, type) => {
     const previousUserBalance = user.balance;
     let currentUserBalance;
     if (type === "Income") {
-        currentUserBalance = parseInt(previousUserBalance) + parseInt(amount);
+        currentUserBalance =
+            parseFloat(previousUserBalance) + parseFloat(amount);
     } else {
-        currentUserBalance = parseInt(previousUserBalance) - parseInt(amount);
+        currentUserBalance =
+            parseFloat(previousUserBalance) - parseFloat(amount);
     }
     await User.findOneAndUpdate(
         { _id: userId },
