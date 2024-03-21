@@ -45,7 +45,7 @@ const deleteTransaction = async (transactionId, userId) => {
     await Transaction.findOneAndDelete({ _id: transactionId });
     await updateBalance(
         userId,
-        parseInt(-transaction.amount),
+        parseFloat(-transaction.amount),
         transaction.type
     );
 };
