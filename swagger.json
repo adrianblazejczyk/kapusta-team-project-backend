@@ -1,0 +1,616 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "KAPUSTA API",
+    "description": "API documentation for managing financial transactions and reports"
+  },
+  "servers": [
+    {
+      "url": "https://kapusta-team-project-backend.onrender.com",
+      "description": "Production server"
+    }
+  ],
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Endpoints for managing user accounts"
+    },
+    {
+      "name": "Transactions",
+      "description": "Endpoints for managing financial transactions"
+    },
+    {
+      "name": "Reports",
+      "description": "Endpoints for generating financial reports"
+    }
+  ],
+  "paths": {
+    "/api/users/signup": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create a new user account",
+        "description": "Create a new user account with the provided email and password.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "description": "User object with email and password",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserSignup"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User account created successfully"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "409": {
+            "description": "Email already in use"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User login",
+        "description": "Authenticate user with email and password and receive a JWT token.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "credentials",
+            "description": "User credentials object with email and password",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Incorrect email or password"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Logout user",
+        "description": "Logout the currently authenticated user.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/users/current": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get current user",
+        "description": "Get details of the currently authenticated user.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/UserDetails"
+            }
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/users/balance": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user balance",
+        "description": "Update the balance of the currently authenticated user.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "balanceUpdate",
+            "description": "Object containing the updated balance",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BalanceUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User balance updated successfully",
+            "schema": {
+              "$ref": "#/definitions/UserDetails"
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/transactions": {
+      "post": {
+        "tags": ["Transactions"],
+        "summary": "Add a new transaction",
+        "description": "Add a new financial transaction for the currently authenticated user.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "transaction",
+            "description": "Transaction object with date, type, category, and amount",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Transaction added successfully"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/transactions/income": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get income transactions",
+        "description": "Get all income transactions for the currently authenticated user.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Income transactions retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Transaction"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/transactions/expenses": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get expenses transactions",
+        "description": "Get all expenses transactions for the currently authenticated user.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Expenses transactions retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Transaction"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/transactions/{id}": {
+      "delete": {
+        "tags": ["Transactions"],
+        "summary": "Delete transaction",
+        "description": "Delete a transaction by ID for the currently authenticated user.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the transaction to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/report/detailed": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Get detailed financial report",
+        "description": "Get a detailed financial report for the specified year and month for the currently authenticated user.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "year",
+            "description": "Year of the report",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "description": "Month of the report",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed report retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/DetailedReport"
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "404": {
+            "description": "No transactions found for the provided parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/report/detailed/category": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Get detailed category report",
+        "description": "Get a detailed financial report for the specified transaction type (Income or Expenses) and category for the currently authenticated user.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "description": "Type of transaction (Income or Expenses)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "description": "Category of the transaction",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed category report retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Transaction"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "404": {
+            "description": "No transactions found for the provided parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/report/expenses": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Get expenses report",
+        "description": "Returns a report of expenses for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "code": {
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 200
+                },
+                "expensesReport": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/report/income": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Get income report",
+        "description": "Returns a report of income for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "code": {
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 200
+                },
+                "report": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DetailedFinancialReport": {
+      "type": "object",
+      "properties": {
+        "Balance": {
+          "type": "number"
+        },
+        "Income": {
+          "type": "number"
+        },
+        "Expenses": {
+          "type": "number"
+        },
+        "IncomeCategories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "ExpenseCategories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Income", "Expenses"]
+        },
+        "category": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "UserSignup": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "UserLogin": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "UserDetails": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "balance": {
+          "type": "number"
+        }
+      }
+    },
+    "BalanceUpdate": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
