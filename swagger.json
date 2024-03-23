@@ -11,7 +11,6 @@
       "description": "Production server"
     }
   ],
-  "basePath": "/",
   "tags": [
     {
       "name": "Users",
@@ -24,8 +23,20 @@
     {
       "name": "Reports",
       "description": "Endpoints for generating financial reports"
+    },
+    {
+      "name": "Categories",
+      "description": "Endpoints for  income and expenses categories"
     }
   ],
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Authorization header using the Bearer token. The token must be prefixed with 'Bearer '."
+    }
+  },
   "paths": {
     "/api/users/signup": {
       "post": {
@@ -106,7 +117,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -130,7 +141,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -161,7 +172,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -203,7 +214,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -241,7 +252,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -271,7 +282,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -310,7 +321,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -352,7 +363,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -401,7 +412,7 @@
         "produces": ["application/json"],
         "security": [
           {
-            "JWT": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -498,8 +509,69 @@
           }
         }
       }
+    },
+    "/api/categories/income": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get income categories",
+        "description": "Get all income categories for the currently authenticated user.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Income categories retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Category"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/categories/expenses": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get expenses categories",
+        "description": "Get all expenses categories for the currently authenticated user.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Expenses categories retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Category"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - User not logged in"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
   },
+
   "definitions": {
     "DetailedFinancialReport": {
       "type": "object",
