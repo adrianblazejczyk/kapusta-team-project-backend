@@ -32,6 +32,7 @@
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
+      "scheme": "bearer",
       "name": "Authorization",
       "in": "header",
       "description": "Authorization header using the Bearer token. The token must be prefixed with 'Bearer '."
@@ -441,7 +442,7 @@
       }
     },
     "/api/report/expenses": {
-      "get": {
+      "post": {
         "tags": ["Reports"],
         "summary": "Get expenses report",
         "description": "Returns a report of expenses for the authenticated user.",
@@ -476,7 +477,7 @@
       }
     },
     "/api/report/income": {
-      "get": {
+      "post": {
         "tags": ["Reports"],
         "summary": "Get income report",
         "description": "Returns a report of income for the authenticated user.",
