@@ -4,7 +4,7 @@ const transactionSchema = Joi.object({
     date: Joi.date().required(),
     type: Joi.string().valid("Income", "Expenses").required(),
     category: Joi.string().required(),
-    amount: Joi.number().required(),
+    amount: Joi.number().positive().greater(0).required(),
     user: Joi.string().required(),
 });
 
