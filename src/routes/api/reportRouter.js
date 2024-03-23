@@ -6,10 +6,10 @@ const authMiddleware = require("../../middlewares/verifyToken");
 
 router.get("/detailed", authMiddleware, reportController.getDetailedReport);
 router.get(
-  "/detailed/category",
-  authMiddleware,
-  reportController.getDetailedCategoryReport
+    "/detailed/category",
+    authMiddleware,
+    reportController.getDetailedCategoryReport
 );
-router.get("/expenses", authMiddleware, reportController.getExpensesReport);
-router.get("/income", authMiddleware, reportController.getIncomeReport);
+router.post("/expenses", authMiddleware, reportController.getExpensesReport);
+router.post("/income", authMiddleware, reportController.getIncomeReport);
 module.exports = router;

@@ -8,6 +8,7 @@ const path = require("path");
 const usersRouter = require("./src/routes/api/usersRouter");
 const transactionsRouter = require("./src/routes/api/transactionsRouter");
 const reportRouter = require("./src/routes/api/reportRouter");
+const categoryRouter = require("./src/routes/api/categoryRouter");
 
 const DB_URL = process.env.DB_HOST;
 const db = mongoose.connect(DB_URL);
@@ -25,12 +26,13 @@ app.use(express.json());
 app.use("/api/users", usersRouter);
 app.use("/api/transactions", transactionsRouter);
 app.use("/api/report", reportRouter);
+app.use("/api/categories", categoryRouter);
 
 app.use((req, res) => {
-  res.status(404).json({ message: "Not found" });
+    res.status(404).json({ message: "Not found" });
 });
 
 app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
 });
 module.exports = { app, db };
