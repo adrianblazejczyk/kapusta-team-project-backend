@@ -110,6 +110,48 @@
         }
       }
     },
+    "/api/users/loginGoogle": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login with Google",
+        "description": "Authenticate user with Google credentials and receive a JWT token.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "credentials",
+            "description": "Google access token",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "credentials": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Incorrect Google credentials"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/users/logout": {
       "get": {
         "tags": ["Users"],
@@ -446,6 +488,11 @@
         "tags": ["Reports"],
         "summary": "Get expenses report",
         "description": "Returns a report of expenses for the authenticated user.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -481,6 +528,11 @@
         "tags": ["Reports"],
         "summary": "Get income report",
         "description": "Returns a report of income for the authenticated user.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -682,6 +734,26 @@
       "properties": {
         "balance": {
           "type": "number"
+        }
+      }
+    },
+    "GoogleLoginResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
+            }
+          }
         }
       }
     }
