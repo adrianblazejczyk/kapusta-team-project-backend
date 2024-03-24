@@ -431,6 +431,7 @@
         }
       }
     },
+
     "/api/report/detailed/category": {
       "get": {
         "tags": ["Reports"],
@@ -450,6 +451,22 @@
             "description": "Category of the transaction",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "description": "Year of the report",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "description": "Month of the report",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "produces": ["application/json"],
