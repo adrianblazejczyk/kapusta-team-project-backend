@@ -141,7 +141,8 @@ const loginGoogle = async (req, res) => {
     let user = await findUserByEmail(userInfo.data.email);
 
     if (!user) {
-      const userData = { email: userInfo.data.email };
+      const hashedPassword = await bcrypt.hash(userInfo.data.sub, 10);
+      const userData = { email: userInfo.data.email, password: hashedPassword };
       console.log(userData);
       const newUser = await addNewUser(userData);
 
