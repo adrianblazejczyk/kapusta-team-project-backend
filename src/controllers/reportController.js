@@ -1,5 +1,5 @@
 const reportService = require("../services/reportService");
-const Transaction = require("../schemas/transactions");
+// const transaction = require("../schemas/transactions");
 const {
   reportQuerySchema,
   categoryReportQuerySchema,
@@ -69,21 +69,24 @@ const getDetailedReport = async (req, res, next) => {
 const getDetailedCategoryReport = async (req, res, next) => {
   try {
     const { error, value } = categoryReportQuerySchema.validate(req.query);
-    if (error) {
-      return res.status(400).json({
-        status: "error",
-        message: error.details[0].message,
-      });
-    }
+    console.log(error);
+    // if (error) {
+    //   return res.status(400).json({
+    //     status: "error",
+    //     message: error.details[0].message,
+    //   });
+    // }
 
-    const { type, category } = value;
-
-    const transactions = await Transaction.find({
-      user: req.user.id,
-      type: type,
-      category: category,
-    });
-
+    const { type, category, year, month } = value;
+    console.log(value);
+    const transactions = await reportService.getTransactionsFromCategory(
+      req.user.id,
+      parseInt(year),
+      parseInt(month),
+      type,
+      category
+    );
+    console.log(transactions);
     if (!transactions || transactions.length === 0) {
       return res.status(404).json({
         status: "error",
@@ -91,16 +94,16 @@ const getDetailedCategoryReport = async (req, res, next) => {
       });
     }
 
-    const report = transactions.map((transaction) => ({
-      date: transaction.date,
-      description: transaction.description,
-      amount: transaction.amount,
-    }));
+    // const report1 = transactions.map((transaction) => ({
+    //   date: transaction.date,
+    //   description: transaction.description,
+    //   amount: transaction.amount,
+    // }));
 
     res.status(200).json({
       status: "success",
       code: 200,
-      report: report,
+      report: transactions,
     });
   } catch (error) {
     next(error);
