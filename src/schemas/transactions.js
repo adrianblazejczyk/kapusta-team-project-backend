@@ -20,7 +20,7 @@ const transactionSchema = new mongoose.Schema(
         },
         amount: {
             type: Number,
-            min: "0",
+            min: "0.01",
             required: true,
         },
         user: {
