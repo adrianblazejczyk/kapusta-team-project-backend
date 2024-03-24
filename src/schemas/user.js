@@ -3,35 +3,35 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    password: {
-        type: String,
-        required: [true, "Password is required"],
-    },
-    email: {
-        type: String,
-        required: [true, "Email is required"],
-        unique: true,
-    },
-    balance: {
-        type: Number,
-        default: 0,
-    },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+  },
+  email: {
+    type: String,
+    required: [true, "Email is required"],
+    unique: true,
+  },
+  balance: {
+    type: Number,
+    default: 0,
+  },
 
-    token: {
-        type: String,
-        default: null,
-    },
-    // FOR PASSWORD USAGE IN THE FUTURE
-    // verify: {
-    //     type: Boolean,
-    //     default: false,
-    // },
-    // verificationToken: {
-    //     type: String,
-    //     required: [true, "Verify token is required"],
-    // },
+  token: {
+    type: String,
+    default: null,
+  },
+  // FOR PASSWORD USAGE IN THE FUTURE
+  // verify: {
+  //     type: Boolean,
+  //     default: false,
+  // },
+  // verificationToken: {
+  //     type: String,
+  //     required: [true, "Verify token is required"],
+  // },
 
-    //
+  //
 });
 // FOR PASSWORD USAGE IN THE FUTURE
 // userSchema.methods.setPassword = function (password) {
