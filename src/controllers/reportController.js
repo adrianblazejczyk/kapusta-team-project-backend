@@ -1,5 +1,5 @@
 const reportService = require("../services/reportService");
-// const transaction = require("../schemas/transactions");
+
 const {
   reportQuerySchema,
   categoryReportQuerySchema,
@@ -70,12 +70,12 @@ const getDetailedCategoryReport = async (req, res, next) => {
   try {
     const { error, value } = categoryReportQuerySchema.validate(req.query);
     console.log(error);
-    // if (error) {
-    //   return res.status(400).json({
-    //     status: "error",
-    //     message: error.details[0].message,
-    //   });
-    // }
+    if (error) {
+      return res.status(400).json({
+        status: "error",
+        message: error.details[0].message,
+      });
+    }
 
     const { type, category, year, month } = value;
     console.log(value);
@@ -93,12 +93,6 @@ const getDetailedCategoryReport = async (req, res, next) => {
         message: "No transactions found for the provided parameters.",
       });
     }
-
-    // const report1 = transactions.map((transaction) => ({
-    //   date: transaction.date,
-    //   description: transaction.description,
-    //   amount: transaction.amount,
-    // }));
 
     res.status(200).json({
       status: "success",
