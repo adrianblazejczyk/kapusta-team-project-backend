@@ -97,6 +97,30 @@ const getDetailedReport = async (userId, year, month) => {
   }
 };
 
+const getTransactionsFromCategory = async (
+  userId,
+  year,
+  month,
+  type,
+  category
+) => {
+  try {
+    const sortTransactions = await Transaction.find({
+      user: userId,
+      date: {
+        $gte: new Date(`${year}-${month}-01`),
+        $lte: new Date(`${year}-${month}-31`),
+      },
+      type: type,
+      category: category,
+    }).sort({ amount: -1 });
+    return sortTransactions;
+  } catch (err) {
+    console.log(err.message);
+    return null;
+  }
+};
+
 const getDetailedCategoryReport = async (userId, type, category) => {
   try {
     // Pobranie wszystkich transakcji z określonym typem i kategorią
@@ -134,4 +158,5 @@ module.exports = {
   getIncomeReport,
   getDetailedReport,
   getDetailedCategoryReport,
+  getTransactionsFromCategory,
 };
