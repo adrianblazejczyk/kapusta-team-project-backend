@@ -47,10 +47,6 @@ const deleteTransaction = async (req, res, next) => {
             userId
         );
 
-        // const transaction = await Transaction.findOne({
-        //     _id: transactionId,
-        //     user: userId,
-        // });
         if (result === 400) {
             return res.status(400).json({
                 status: "failure",
