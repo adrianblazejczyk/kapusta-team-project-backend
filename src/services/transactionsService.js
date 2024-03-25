@@ -42,7 +42,10 @@ const getExpensesTransactionsByUser = async (userId) => {
 
 const deleteTransaction = async (transactionId, userId) => {
     const transaction = await Transaction.findOne({ _id: transactionId });
-    await Transaction.findOneAndDelete({ _id: transactionId });
+    if (!transaction) {
+        return 400;
+    }
+    await Transaction.deleteOne({ _id: transactionId });
     await updateBalance(
         userId,
         parseFloat(-transaction.amount),

@@ -1,7 +1,6 @@
 const transactionsService = require("../services/transactionsService");
 
 const { validateTransaction } = require("../validators/transactionValidator");
-const Transaction = require("../schemas/transactions");
 
 const addTransaction = async (req, res, next) => {
     try {
@@ -43,11 +42,16 @@ const deleteTransaction = async (req, res, next) => {
         const transactionId = req.params.id;
         const userId = req.user.id;
 
-        const transaction = await Transaction.findOne({
-            _id: transactionId,
-            user: userId,
-        });
-        if (!transaction) {
+        const result = await transactionsService.deleteTransaction(
+            transactionId,
+            userId
+        );
+
+        // const transaction = await Transaction.findOne({
+        //     _id: transactionId,
+        //     user: userId,
+        // });
+        if (result === 400) {
             return res.status(400).json({
                 status: "failure",
                 code: 400,
@@ -56,7 +60,6 @@ const deleteTransaction = async (req, res, next) => {
             });
         }
 
-        await Transaction.deleteOne({ _id: transactionId });
         res.status(200).json({
             status: "success",
             code: 200,
